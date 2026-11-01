@@ -8,7 +8,7 @@ import {
     Mail, ExternalLink, Image as ImageIcon, Sparkles, Plus, 
     Trash2, Eye, ShieldCheck, GraduationCap, Clock, Award, 
     Save, Link2, Share2, HelpCircle, Layers, Check, Upload,
-    Camera, RefreshCw
+    Camera, RefreshCw, X
 } from 'lucide-react';
 
 interface InstitutionProfileEditingViewProps {

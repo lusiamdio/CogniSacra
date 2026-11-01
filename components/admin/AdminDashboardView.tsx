@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { PlatformStats } from '../../types';
 import { adminService } from '../../services/adminService';
 import { Users, GraduationCap, Library, DollarSign, TrendingUp, UserPlus, BookPlus, Activity, RefreshCw } from 'lucide-react';
-import { View } from '../../App';
+type AdminView = 'admin-users' | 'admin-courses' | 'admin-library';
 
 interface AdminDashboardViewProps {
-    onNavigate?: (view: View) => void;
+    onNavigate?: (view: AdminView) => void;
 }
 
 const StatCard: React.FC<{

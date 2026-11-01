@@ -485,3 +485,24 @@ export interface SubscriptionTier {
   cta: string;
   featured?: boolean;
 }
+
+
+export interface PlatformStats {
+  totalUsers: number; activeUsers: number; totalCourses: number; publishedCourses: number;
+  totalLibraryItems: number; totalRevenue: number; newUsersThisMonth: number; newCoursesThisMonth: number;
+}
+export interface PlatformUser {
+  id: string; name: string; email: string;
+  role: 'platform_admin' | 'instructor' | 'institution_admin' | 'independent_learner';
+  status: 'active' | 'suspended' | 'pending'; isEmailVerified: boolean; createdAt: string;
+}
+export interface PlatformCourse {
+  id: string; title: string; instructor: string; instructorId: string;
+  status: 'published' | 'draft' | 'pending_review' | 'archived';
+  enrollments: number; rating: number; createdAt: string; category: string;
+}
+export interface PlatformLibraryItem {
+  id: string; title: string; type: 'book' | 'article' | 'video' | 'document';
+  author: string; uploadedBy: string; status: 'published' | 'pending' | 'rejected';
+  downloads: number; createdAt: string;
+}

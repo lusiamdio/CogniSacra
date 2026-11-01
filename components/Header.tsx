@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import MenuIcon from './icons/MenuIcon';
+import XMarkIcon from './icons/XMarkIcon';
 import UserIcon from './icons/UserIcon';
 import { UserRole } from '../types';
 import LogoutIcon from './icons/LogoutIcon';

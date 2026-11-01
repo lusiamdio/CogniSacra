@@ -63,7 +63,7 @@ type AppState = 'landing' | 'app';
 
 const App: React.FC = () => {
     const [appState, setAppState] = useState<AppState>('app');
-    const [onboardingStep, setOnboardingStep] = useState<OnboardingStep>('loaded');
+    const [onboardingStep, setOnboardingStep] = useState<OnboardingStep>('auth');
     const [currentView, setCurrentView] = useState<View>('course-landing');
     const [userRole, setUserRole] = useState<UserRole>('learner');
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(initialCourses.find(c => c.id === 'react-mastery') || null);
@@ -139,12 +139,14 @@ const App: React.FC = () => {
 
         const {
             data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
+        } = supabase.auth.onAuthStateChange((event, session) => {
             setSession(session);
-            if (session) fetchUserProfile(session.user.id);
-            else {
-                // Handle logout state cleanup if necessary
+            if (session) {
+                fetchUserProfile(session.user.id);
+                if (event === 'INITIAL_SESSION') setOnboardingStep('loaded');
+            } else {
                 setUserProfileData(initialUserProfile);
+                if (event === 'SIGNED_OUT') setOnboardingStep('auth');
             }
         });
 
