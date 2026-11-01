@@ -34,38 +34,42 @@ CogniSacra Academy is a comprehensive AI-powered educational platform serving th
 
 ---
 
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:5846dcb7e719c91e233297cfc76290f255a9370519f85eacbfbaeb006b90462d -->
+
 ## Run Locally
 
-**Prerequisites:** Node.js 18+, pnpm
+**Prerequisites:** Node.js 20.19+ or 22.12+, npm
 
 ```bash
-# 1. Install dependencies
-pnpm install
-
-# 2. Configure environment variables
+npm ci
 cp .env.example .env
-# Edit .env with your keys
-
-# 3. Run development server
-pnpm dev
+# Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env
+npm run dev
 ```
+
+The anonymous Supabase key is public; never put a service role key in the frontend. Authentication requires a configured Supabase project. Failed requests do not create local sessions.
+
+## Security and deployment
+
+Apply `supabase/migrations/20261101000000_security_hardening.sql` to existing databases. It restricts full profile rows and accreditation records to their owners, hides draft course content from other users, and reserves certificate and achievement issuance for trusted service code. Public profile and accreditation verification consumers need a separate, limited server interface.
+
+<!-- coderabbit-ai-generated:v1 -->
+
+<!-- coderabbit-ai-generated-section:v1:872230154c40ece8c04046ae9277e111e63009d0214188e1db1fb68b64b7e9cf -->
+
+Gemini features are disabled until an authenticated, rate-limited server integration is implemented. Do not put a Gemini key in frontend environment variables or bundles. Rotate any key previously used with this application, since previous builds exposed it to browsers.
+
+Role selection and accreditation are currently client-side prototypes; they do not establish verified institutional membership or trustworthy authorization. Implement server-side role approval, accreditation redemption, and issuance before using those features in production.
+
+<!-- /coderabbit-ai-generated:v1 -->
 
 ---
 
-## Environment Variables
 
-```env
-# Required
-GEMINI_API_KEY=your_gemini_api_key
 
-# Supabase
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
----
-
-## MVP Checklist
+<!-- /coderabbit-ai-generated:v1 -->## MVP Checklist
 
 > **MVP Implementation Status:** The foundational Supabase schema (core profile tables + all Phase 2–6 MVP tables) is implemented in `supabase/schema.sql` and seeded via `supabase/seed.sql`. OAuth provider configuration is intentionally left untouched.
 

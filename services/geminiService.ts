@@ -2,13 +2,11 @@
 // FIX: Add missing imports for Modality and GenerateContentResponse
 import { GoogleGenAI, Chat, Type, Modality, GenerateContentResponse } from "@google/genai";
 
-const API_KEY = process.env.API_KEY || (typeof window !== 'undefined' && (window as any).__GEMINI_KEY__) || '';
-
-if (!API_KEY) {
-  console.warn("API_KEY environment variable is not set; Gemini features will prompt or use fallback responses.");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY || 'AIzaSyDemoKeyFallback0000000000000000' });
+// Provider secrets must stay on a trusted server. This client is disabled until
+// an authenticated, rate-limited server integration is configured.
+const getAI = (): GoogleGenAI => {
+  throw new Error('AI features require a secure server integration.');
+};
 
 let tutorChat: Chat | null = null;
 let architectChat: Chat | null = null;
@@ -17,7 +15,7 @@ export const startTutorChat = (): Chat => {
   if (tutorChat) {
     return tutorChat;
   }
-  tutorChat = ai.chats.create({
+  tutorChat = getAI().chats.create({
     model: 'gemini-3-flash-preview',
     config: {
       systemInstruction: 'You are CogniSacra AI, a friendly and expert educational tutor. Your goal is to help users understand complex topics by providing clear, concise explanations, step-by-step examples, and encouraging feedback. Always be patient and supportive. Break down difficult concepts into smaller, easy-to-digest parts. Ask clarifying questions to better understand the user\'s needs.',
@@ -30,7 +28,7 @@ export const startArchitectChat = (): Chat => {
   if (architectChat) {
     return architectChat;
   }
-  architectChat = ai.chats.create({
+  architectChat = getAI().chats.create({
     model: 'gemini-3-flash-preview',
     config: {
         systemInstruction: `You are the AI Architect for the CogniSacra Academy platform, a specialized AI assistant for course instructors. Your primary function is to provide expert, data-driven coaching to help them create world-class courses.
@@ -69,7 +67,7 @@ export const sendMessageToArchitect = async (message: string) => {
 
 // FIX: Add missing sendMessageToAI function for one-off streaming content generation.
 export const sendMessageToAI = async (prompt: string) => {
-  return ai.models.generateContentStream({
+  return getAI().models.generateContentStream({
     model: 'gemini-3-flash-preview',
     contents: prompt,
   });
@@ -77,7 +75,7 @@ export const sendMessageToAI = async (prompt: string) => {
 
 // FIX: Implement and export getQuickAnswer for the dashboard widget.
 export const getQuickAnswer = async (question: string): Promise<GenerateContentResponse> => {
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: question,
     });
@@ -86,7 +84,7 @@ export const getQuickAnswer = async (question: string): Promise<GenerateContentR
 
 // FIX: Implement and export generateImage for the AI Tools view.
 export const generateImage = async (prompt: string, aspectRatio: string) => {
-    return ai.models.generateImages({
+    return getAI().models.generateImages({
         model: 'imagen-4.0-generate-001',
         prompt: prompt,
         config: {
@@ -107,7 +105,7 @@ export const editImage = async (base64Data: string, mimeType: string, prompt: st
     };
     const textPart = { text: prompt };
 
-    return ai.models.generateContent({
+    return getAI().models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: { parts: [imagePart, textPart] },
         config: {
@@ -149,7 +147,7 @@ export const sendMessageToBot = async (
         };
     }
 
-    return ai.models.generateContentStream({
+    return getAI().models.generateContentStream({
         model: 'gemini-2.5-flash', // Must keep 2.5 for Maps support
         contents: message,
         config: {
@@ -178,7 +176,7 @@ export const translateText = async (text: string, targetLanguageCode: string): P
     try {
         const prompt = `Translate the following English text to ${targetLanguage}. Do not translate proper nouns like names of people (e.g., Alex), companies, or specific technologies (e.g., React). Respond only with the translated text, without any additional explanation or quotation marks.\n\nText: "${text}"`;
         
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-3-flash-preview',
             contents: prompt,
         });
@@ -243,7 +241,7 @@ export const generateAdaptiveQuestion = async (
     }
 
     try {
-        const response = await ai.models.generateContent({
+        const response = await getAI().models.generateContent({
             model: 'gemini-3-flash-preview',
             contents: prompt,
             config: {
@@ -289,7 +287,7 @@ export const getReviewSuggestions = async (
         ${transcriptsString}
     `;
 
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
     });

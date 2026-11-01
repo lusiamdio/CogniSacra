@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import CogniSacraLogo from '../icons/IntelliLearnLogo';
-import GoogleIcon from '../icons/GoogleIcon';
-import AppleIcon from '../icons/AppleIcon';
 import EyeIcon from '../icons/EyeIcon';
 import EyeSlashIcon from '../icons/EyeSlashIcon';
-import { supabase } from '../../services/supabaseClient';
+import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
 import { ShieldCheck, KeyRound, Terminal, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -14,17 +12,6 @@ interface LoginViewProps {
 
 type AuthTab = 'signin' | 'signup';
 
-const SocialButton: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void }> = ({ icon, label, onClick }) => (
-    <button
-        type="button"
-        onClick={onClick}
-        aria-label={label}
-        className="w-full flex items-center justify-center py-2.5 px-4 border border-[#1E2536] rounded-xl bg-[#0E131C] hover:bg-[#151C28] text-zinc-300 hover:text-white transition-all duration-200 group"
-    >
-        <span className="group-hover:scale-110 transition-transform duration-200">{icon}</span>
-    </button>
-);
-
 const LoginView: React.FC<LoginViewProps> = ({ onAuthenticated }) => {
     const [activeTab, setActiveTab] = useState<AuthTab>('signin');
     const [email, setEmail] = useState('');
@@ -32,6 +19,7 @@ const LoginView: React.FC<LoginViewProps> = ({ onAuthenticated }) => {
     const [fullName, setFullName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [notice, setNotice] = useState<string | null>(null);
     const [isVisible, setIsVisible] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -40,60 +28,30 @@ const LoginView: React.FC<LoginViewProps> = ({ onAuthenticated }) => {
         setErrorMsg(null);
 
         try {
+            setNotice(null);
+            if (!isSupabaseConfigured) throw new Error('Authentication is not configured.');
             if (activeTab === 'signup') {
-                // New user sign up - ONLY after this does onboarding trigger!
-                let userName = fullName.trim() || email.split('@')[0] || 'New Scholar';
-                try {
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                            data: {
-                                full_name: userName,
-                                avatar_url: `https://i.pravatar.cc/150?u=${email}`,
-                            }
-                        }
-                    });
-                    if (error) console.warn("Supabase signup notice:", error.message);
-                } catch (supaErr) {
-                    console.warn("Supabase auth error fallback to local session:", supaErr);
+                const userName = fullName.trim() || email.split('@')[0] || 'New Scholar';
+                const { data, error } = await supabase.auth.signUp({
+                    email, password, options: { data: { full_name: userName } }
+                });
+                if (error) throw error;
+                if (!data.session) {
+                    setNotice('Check your email to confirm your account, then sign in.');
+                    return;
                 }
-                
-                // Trigger onboarding flow ONLY after sign up
                 onAuthenticated(userName, true);
-
             } else {
-                // Existing user sign in - goes directly to dashboard without onboarding
-                let userName = email.split('@')[0] || 'Authorized Scholar';
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password,
-                    });
-                    if (data?.user?.user_metadata?.full_name) {
-                        userName = data.user.user_metadata.full_name;
-                    }
-                } catch (supaErr) {
-                    console.warn("Supabase login notice:", supaErr);
-                }
-
-                // Existing sign in: bypass onboarding straight to dashboard
-                onAuthenticated(userName, false);
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                if (!data.session) throw new Error('Sign in did not create a session.');
+                onAuthenticated(data.user.user_metadata?.full_name || email.split('@')[0], false);
             }
         } catch (error: any) {
-            console.error('Authentication error:', error);
             setErrorMsg(error.message || 'Authentication error occurred');
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleQuickSignIn = () => {
-        onAuthenticated('Dr. Joseph Adebayo', false);
-    };
-
-    const handleQuickSignUp = () => {
-        onAuthenticated('New Academic Scholar', true);
     };
 
     return (
@@ -244,6 +202,8 @@ const LoginView: React.FC<LoginViewProps> = ({ onAuthenticated }) => {
                         </div>
                     )}
 
+                    {notice && <div role="status" className="p-3 text-emerald-400 text-xs">{notice}</div>}
+
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         
@@ -320,31 +280,6 @@ const LoginView: React.FC<LoginViewProps> = ({ onAuthenticated }) => {
                             )}
                         </button>
                     </form>
-
-                    {/* Quick Demo Launchers */}
-                    <div className="pt-4 border-t border-[#1A2230] space-y-2">
-                        <div className="text-[10px] font-mono uppercase text-zinc-500 tracking-wider text-center">
-                            Evaluation Quick Simulators
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                            <button
-                                type="button"
-                                onClick={handleQuickSignIn}
-                                className="p-2 rounded-xl bg-[#0E131C] hover:bg-[#141B26] border border-[#1E2536] text-[11px] font-mono text-zinc-300 hover:text-white transition text-center"
-                            >
-                                <span className="text-zinc-400 block text-[9px]">Existing User</span>
-                                <span>⚡ Direct Sign In</span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={handleQuickSignUp}
-                                className="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-[11px] font-mono text-emerald-300 hover:text-emerald-200 transition text-center"
-                            >
-                                <span className="text-emerald-400/70 block text-[9px]">New User</span>
-                                <span>✨ Sign Up & Onboard</span>
-                            </button>
-                        </div>
-                    </div>
 
                 </motion.div>
             </div>
