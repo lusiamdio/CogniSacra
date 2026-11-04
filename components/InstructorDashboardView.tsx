@@ -61,98 +61,7 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
     };
 
     // Real-time student telemetry dataset
-    const [realtimeStudents, setRealtimeStudents] = useState<StudentRealtimeProgress[]>([
-        {
-            id: 'stu-1',
-            name: 'Sarah Mwangi',
-            email: 'sarah.mwangi@uonbi.ac.ke',
-            avatarUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=150&q=80',
-            institution: 'University of Nairobi',
-            program: 'BSc. Distributed Systems & AI',
-            enrolledCourse: 'Advanced Autonomous Agent Architectures',
-            currentLesson: 'Module 3.2: Socratic Context Anchoring & Grounding',
-            progressPercentage: 84,
-            quizScoreAvg: 96,
-            streakDays: 14,
-            status: 'studying_now',
-            lastActive: 'Active right now',
-            modulesCompleted: 4,
-            totalModules: 5,
-            competencies: ['Byzantine Agreement', 'Vector Embedding Search', 'LTI 1.3 Advantage', 'Socratic Synthesis']
-        },
-        {
-            id: 'stu-2',
-            name: 'David Mensah',
-            email: 'david.mensah@knust.edu.gh',
-            avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80',
-            institution: 'KNUST Ghana',
-            program: 'MSc. Electrical & Neural Networks',
-            enrolledCourse: 'Distributed Systems & Byzantine Fault Tolerance',
-            currentLesson: 'Module 2.1: Paxos vs Raft State Machines in Cloud Sandboxes',
-            progressPercentage: 62,
-            quizScoreAvg: 88,
-            streakDays: 9,
-            status: 'studying_now',
-            lastActive: 'Active right now',
-            modulesCompleted: 3,
-            totalModules: 5,
-            competencies: ['Raft State Replication', 'Consensus Latency Analysis', 'Distributed SQL']
-        },
-        {
-            id: 'stu-3',
-            name: 'Amina Bello',
-            email: 'amina.bello@unilag.edu.ng',
-            avatarUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&q=80',
-            institution: 'University of Lagos',
-            program: 'BSc. Software Engineering',
-            enrolledCourse: 'PostgreSQL Enterprise Architecture & Scale-to-Zero',
-            currentLesson: 'Module 4.4: High-Concurrency ACID Isolation Benchmarks',
-            progressPercentage: 92,
-            quizScoreAvg: 94,
-            streakDays: 21,
-            status: 'studying_now',
-            lastActive: 'Active right now',
-            modulesCompleted: 4,
-            totalModules: 4,
-            competencies: ['PostgreSQL Partitioning', 'WAL Replication', 'Query Explain Plan Tuning']
-        },
-        {
-            id: 'stu-4',
-            name: 'Liam Van Der Merwe',
-            email: 'liam.vdm@uct.ac.za',
-            avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&q=80',
-            institution: 'University of Cape Town',
-            program: 'BSc. Data Science',
-            enrolledCourse: 'Advanced Autonomous Agent Architectures',
-            currentLesson: 'Module 1.4: Multi-Agent Swarm Orchestration',
-            progressPercentage: 45,
-            quizScoreAvg: 82,
-            streakDays: 4,
-            status: 'active_today',
-            lastActive: '28 mins ago',
-            modulesCompleted: 2,
-            totalModules: 5,
-            competencies: ['Python AsyncIO', 'LangGraph Patterns']
-        },
-        {
-            id: 'stu-5',
-            name: 'Elena Rostova',
-            email: 'elena.rostova@faculty.ox.ac.uk',
-            avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&q=80',
-            institution: 'Oxford Academic Exchange',
-            program: 'Fellowship in Cognitive Systems',
-            enrolledCourse: 'Distributed Systems & Byzantine Fault Tolerance',
-            currentLesson: 'Module 5.1: Cross-Border Sovereign Ledger Accreditation',
-            progressPercentage: 98,
-            quizScoreAvg: 99,
-            streakDays: 32,
-            status: 'active_today',
-            lastActive: '1 hour ago',
-            modulesCompleted: 5,
-            totalModules: 5,
-            competencies: ['Cryptographic Verification', 'DID Specifications', 'ZKP Rollups']
-        }
-    ]);
+    const [realtimeStudents, setRealtimeStudents] = useState<StudentRealtimeProgress[]>([]);
 
     const handleSendStudentFeedback = (e: React.FormEvent) => {
         e.preventDefault();
@@ -249,8 +158,8 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
                             <span>Total Learners</span>
                             <Users size={12} className="text-emerald-400" />
                         </div>
-                        <span className="text-xl font-bold text-white">1,428</span>
-                        <span className="text-[9px] text-emerald-400 block">+18% this month</span>
+                        <span className="text-xl font-bold text-white">{courses.reduce((acc, c) => acc + (c.analytics?.totalStudents || 0), 0)}</span>
+                        <span className="text-[9px] text-emerald-400 block">Across curriculum</span>
                     </div>
 
                     <div className="p-3.5 rounded-xl bg-[#141B26] space-y-1">
@@ -258,17 +167,17 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
                             <span>Studying Now</span>
                             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         </div>
-                        <span className="text-xl font-bold text-emerald-400">24 Active</span>
+                        <span className="text-xl font-bold text-emerald-400">0 Active</span>
                         <span className="text-[9px] text-zinc-400 block">Real-time live session</span>
                     </div>
 
                     <div className="p-3.5 rounded-xl bg-[#141B26] space-y-1">
                         <div className="flex items-center justify-between text-[10px] text-zinc-400 uppercase">
-                            <span>Course Velocity</span>
-                            <Activity size={12} className="text-emerald-400" />
+                            <span>Courses</span>
+                            <BookOpen size={12} className="text-emerald-400" />
                         </div>
-                        <span className="text-xl font-bold text-white">78.4%</span>
-                        <span className="text-[9px] text-emerald-400 block">Completion benchmark</span>
+                        <span className="text-xl font-bold text-white">{courses.length}</span>
+                        <span className="text-[9px] text-emerald-400 block">Published & Draft</span>
                     </div>
 
                     <div className="p-3.5 rounded-xl bg-[#141B26] space-y-1">
@@ -276,8 +185,8 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
                             <span>Monthly Payout</span>
                             <span className="text-emerald-400 text-xs">$</span>
                         </div>
-                        <span className="text-xl font-bold text-white">$4,820.00</span>
-                        <span className="text-[9px] text-zinc-400 block">Disburses on 8th</span>
+                        <span className="text-xl font-bold text-white">$0.00</span>
+                        <span className="text-[9px] text-zinc-400 block">100% direct payout</span>
                     </div>
 
                     <div className="p-3.5 rounded-xl bg-[#141B26] space-y-1 col-span-2 sm:col-span-1">
@@ -285,8 +194,8 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
                             <span>Faculty Rating</span>
                             <Star size={12} className="text-amber-400 fill-amber-400" />
                         </div>
-                        <span className="text-xl font-bold text-amber-300">4.94 / 5.0</span>
-                        <span className="text-[9px] text-zinc-400 block">892 Scholar Reviews</span>
+                        <span className="text-xl font-bold text-amber-300">5.0 / 5.0</span>
+                        <span className="text-[9px] text-zinc-400 block">Faculty Benchmark</span>
                     </div>
                 </div>
             </div>
@@ -332,7 +241,14 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-800/60">
-                            {filteredStudents.map(student => (
+                            {filteredStudents.length === 0 ? (
+                                <tr>
+                                    <td colSpan={7} className="py-12 text-center text-xs font-mono text-zinc-500 italic">
+                                        No student telemetry active. Enrolled students will appear here in real time as they progress through curriculum modules.
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredStudents.map(student => (
                                 <tr key={student.id} className="hover:bg-[#141B26]/60 transition">
                                     <td className="py-3 px-3">
                                         <div className="flex items-center gap-2.5">
@@ -397,7 +313,7 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
                                         </button>
                                     </td>
                                 </tr>
-                            ))}
+                            )))}
                         </tbody>
                     </table>
                 </div>
@@ -435,78 +351,95 @@ export const InstructorDashboardView: React.FC<InstructorDashboardViewProps> = (
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {filteredCourses.map(course => (
-                        <div 
-                            key={course.id} 
-                            className="bg-[#0E131C] rounded-2xl shadow-xl border border-[#1E2536] overflow-hidden flex flex-col justify-between hover:border-zinc-700 transition duration-200"
+                {filteredCourses.length === 0 ? (
+                    <div className="text-center py-12 px-4 rounded-2xl bg-[#0E131C] border border-[#1E2536] text-zinc-400 space-y-3">
+                        <BookOpen className="w-10 h-10 text-zinc-600 mx-auto" />
+                        <h3 className="text-sm font-bold text-white font-serif">No Courses Created Yet</h3>
+                        <p className="text-xs font-mono text-zinc-400 max-w-md mx-auto">
+                            Build your curriculum using the AI-assisted Course Builder to publish sovereign micro-credentials and interactive modules.
+                        </p>
+                        <button
+                            onClick={onCreateCourse}
+                            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-mono font-bold inline-flex items-center gap-1.5 transition cursor-pointer"
                         >
-                            <div>
-                                <div className="relative h-40 w-full overflow-hidden bg-[#141B26]">
-                                    <img 
-                                        src={course.imageUrl} 
-                                        alt={course.title} 
-                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" 
-                                    />
-                                    <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-mono font-bold text-emerald-400 uppercase">
-                                        {course.category}
-                                    </span>
-                                    <span className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
-                                        course.isDraft 
-                                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
-                                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                                    }`}>
-                                        {course.isDraft ? 'Draft' : 'Published'}
-                                    </span>
-                                </div>
+                            <Plus size={14} />
+                            <span>Create First Course</span>
+                        </button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {filteredCourses.map(course => (
+                            <div 
+                                key={course.id} 
+                                className="bg-[#0E131C] rounded-2xl shadow-xl border border-[#1E2536] overflow-hidden flex flex-col justify-between hover:border-zinc-700 transition duration-200"
+                            >
+                                <div>
+                                    <div className="relative h-40 w-full overflow-hidden bg-[#141B26]">
+                                        <img 
+                                            src={course.imageUrl} 
+                                            alt={course.title} 
+                                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" 
+                                        />
+                                        <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-mono font-bold text-emerald-400 uppercase">
+                                            {course.category}
+                                        </span>
+                                        <span className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
+                                            course.isDraft 
+                                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
+                                                : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                        }`}>
+                                            {course.isDraft ? 'Draft' : 'Published'}
+                                        </span>
+                                    </div>
 
-                                <div className="p-5 space-y-2.5">
-                                    <h3 className="text-base font-bold font-serif text-white line-clamp-1">{course.title}</h3>
-                                    <p className="text-xs font-sans text-zinc-400 line-clamp-2 leading-relaxed">{course.description}</p>
-                                    
-                                    <div className="pt-2 border-t border-zinc-800/40 grid grid-cols-3 gap-2 text-center font-mono text-[10px]">
-                                        <div className="p-2 rounded-lg bg-[#141B26]">
-                                            <span className="text-zinc-500 uppercase block">Modules</span>
-                                            <span className="text-white font-bold text-xs">{course.modules?.length || 4}</span>
-                                        </div>
-                                        <div className="p-2 rounded-lg bg-[#141B26]">
-                                            <span className="text-zinc-500 uppercase block">Scholars</span>
-                                            <span className="text-emerald-400 font-bold text-xs">240+</span>
-                                        </div>
-                                        <div className="p-2 rounded-lg bg-[#141B26]">
-                                            <span className="text-zinc-500 uppercase block">Rating</span>
-                                            <span className="text-amber-300 font-bold text-xs">4.9 ★</span>
+                                    <div className="p-5 space-y-2.5">
+                                        <h3 className="text-base font-bold font-serif text-white line-clamp-1">{course.title}</h3>
+                                        <p className="text-xs font-sans text-zinc-400 line-clamp-2 leading-relaxed">{course.description}</p>
+                                        
+                                        <div className="pt-2 border-t border-zinc-800/40 grid grid-cols-3 gap-2 text-center font-mono text-[10px]">
+                                            <div className="p-2 rounded-lg bg-[#141B26]">
+                                                <span className="text-zinc-500 uppercase block">Modules</span>
+                                                <span className="text-white font-bold text-xs">{course.modules?.length || 0}</span>
+                                            </div>
+                                            <div className="p-2 rounded-lg bg-[#141B26]">
+                                                <span className="text-zinc-500 uppercase block">Scholars</span>
+                                                <span className="text-emerald-400 font-bold text-xs">0</span>
+                                            </div>
+                                            <div className="p-2 rounded-lg bg-[#141B26]">
+                                                <span className="text-zinc-500 uppercase block">Rating</span>
+                                                <span className="text-amber-300 font-bold text-xs">5.0 ★</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="p-5 pt-0 grid grid-cols-3 gap-2">
-                                <button
-                                    onClick={() => onEditCourse(course)}
-                                    className="py-2 rounded-xl bg-[#141B26] hover:bg-[#1A2332] text-xs font-mono font-semibold text-zinc-200 transition flex items-center justify-center gap-1 cursor-pointer"
-                                >
-                                    <Pencil size={12} />
-                                    <span>Edit</span>
-                                </button>
-                                <button
-                                    onClick={() => onViewCourse(course)}
-                                    className="py-2 rounded-xl bg-[#141B26] hover:bg-[#1A2332] text-xs font-mono font-semibold text-zinc-200 transition flex items-center justify-center gap-1 cursor-pointer"
-                                >
-                                    <Eye size={12} />
-                                    <span>View</span>
-                                </button>
-                                <button
-                                    onClick={() => onViewAnalytics(course)}
-                                    className="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-mono font-bold transition flex items-center justify-center gap-1 cursor-pointer"
-                                >
-                                    <BarChart3 size={12} />
-                                    <span>Analytics</span>
-                                </button>
+                                <div className="p-5 pt-0 grid grid-cols-3 gap-2">
+                                    <button
+                                        onClick={() => onEditCourse(course)}
+                                        className="py-2 rounded-xl bg-[#141B26] hover:bg-[#1A2332] text-xs font-mono font-semibold text-zinc-200 transition flex items-center justify-center gap-1 cursor-pointer"
+                                    >
+                                        <Pencil size={12} />
+                                        <span>Edit</span>
+                                    </button>
+                                    <button
+                                        onClick={() => onViewCourse(course)}
+                                        className="py-2 rounded-xl bg-[#141B26] hover:bg-[#1A2332] text-xs font-mono font-semibold text-zinc-200 transition flex items-center justify-center gap-1 cursor-pointer"
+                                    >
+                                        <Eye size={12} />
+                                        <span>View</span>
+                                    </button>
+                                    <button
+                                        onClick={() => onViewAnalytics(course)}
+                                        className="py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-mono font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                                    >
+                                        <BarChart3 size={12} />
+                                        <span>Analytics</span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* ============================================================

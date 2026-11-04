@@ -62,11 +62,11 @@ type TextSize = 'base' | 'lg' | 'xl';
 type AppState = 'landing' | 'app';
 
 const App: React.FC = () => {
-    const [appState, setAppState] = useState<AppState>('app');
+    const [appState, setAppState] = useState<AppState>('landing');
     const [onboardingStep, setOnboardingStep] = useState<OnboardingStep>('auth');
-    const [currentView, setCurrentView] = useState<View>('course-landing');
+    const [currentView, setCurrentView] = useState<View>('dashboard');
     const [userRole, setUserRole] = useState<UserRole>('learner');
-    const [selectedCourse, setSelectedCourse] = useState<Course | null>(initialCourses.find(c => c.id === 'react-mastery') || null);
+    const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
     const [courses, setCourses] = useState<Course[]>(initialCourses);
     const [currentQuiz, setCurrentQuiz] = useState<Lesson | null>(null);
@@ -80,7 +80,13 @@ const App: React.FC = () => {
     const [userProfileData, setUserProfileData] = useState<UserProfile>(() => {
         try {
             const saved = localStorage.getItem('cognisacra_user_profile');
-            if (saved) return JSON.parse(saved);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                parsed.coursesInProgress = 0;
+                parsed.coursesCompleted = 0;
+                parsed.certificates = (parsed.certificates || []).filter((c: any) => c.courseId !== 'data-science-python');
+                return parsed;
+            }
         } catch (e) {}
         return initialUserProfile;
     });
@@ -89,7 +95,24 @@ const App: React.FC = () => {
     const [institutionData, setInstitutionData] = useState<FullInstitutionData>(() => {
         try {
             const saved = localStorage.getItem('cognisacra_institution_data');
-            if (saved) return JSON.parse(saved);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                const legacyMockIds = new Set(['inst-react-mastery', 'inst-ai-ux-design', 'inst-upcoming-cloud', 'inst-archived-data', 'react-mastery', 'ai-ethics', 'cloud-native', 'data-science-python', 'intro-cloud']);
+                if (parsed.courses) {
+                    parsed.courses = parsed.courses.filter((c: any) => !legacyMockIds.has(c.id));
+                }
+                if (parsed.programs) {
+                    parsed.programs = parsed.programs.filter((p: any) => p.id !== 'prog1' && p.id !== 'prog2');
+                }
+                if (parsed.analytics) {
+                    parsed.analytics.revenueByCourse = [];
+                    parsed.analytics.activeCourses = parsed.courses?.length || 0;
+                }
+                if (parsed.monetization) {
+                    parsed.monetization.programBundles = [];
+                }
+                return parsed;
+            }
         } catch (e) {}
         return initialInstitutionData;
     });
@@ -1110,6 +1133,7 @@ const App: React.FC = () => {
                         onNavigateToSettings={handleNavigateToSettings}
                         onOpenOnboarding={() => setOnboardingStep('role-selection')}
                         onOpenTour={() => setTourOpen(true)}
+                        onVisitWebsite={() => handleSetAppState('landing')}
                     />
                 </div>
 

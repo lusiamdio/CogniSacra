@@ -159,16 +159,32 @@ const InstitutionDashboardView: React.FC<InstitutionDashboardViewProps> = ({
                         + Create Course
                     </button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {courses.map(course => (
-                        <InstitutionCourseCard
-                            key={course.id}
-                            course={course}
-                            onEdit={() => onEditCourse(course)}
-                            onView={() => onViewCourse(course)}
-                        />
-                    ))}
-                </div>
+                {courses.length === 0 ? (
+                    <div className="text-center py-12 px-4 rounded-2xl bg-[#0E131C] border border-[#1E2536] text-zinc-400 space-y-3">
+                        <BookOpenIcon className="w-10 h-10 text-zinc-600 mx-auto" />
+                        <h3 className="text-sm font-bold text-white font-serif">No Institutional Courses Created</h3>
+                        <p className="text-xs font-mono text-zinc-400 max-w-md mx-auto">
+                            Design accredited university programs, syllabus modules, and proctored examinations using the course builder.
+                        </p>
+                        <button
+                            onClick={onCreateCourse}
+                            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-mono font-bold inline-flex items-center gap-1.5 transition cursor-pointer"
+                        >
+                            <span>+ Create First Course</span>
+                        </button>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {courses.map(course => (
+                            <InstitutionCourseCard
+                                key={course.id}
+                                course={course}
+                                onEdit={() => onEditCourse(course)}
+                                onView={() => onViewCourse(course)}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
 
         </div>

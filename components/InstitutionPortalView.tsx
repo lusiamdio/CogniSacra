@@ -47,29 +47,13 @@ export const InstitutionPortalView: React.FC<InstitutionPortalViewProps> = ({ in
   };
 
   // State: Admin-managed Sessions
-  const [sessions, setSessions] = useState<AdminSession[]>([
-    { id: 'as1', title: 'Data Structures: Tree Traversals & Depth Search', courseName: 'Data Structure & Algorithms', instructor: 'Dr. Joseph Adebayo', status: 'Live', studentsCount: 42, proctoringActive: true, timeUTC: '10:00 AM' },
-    { id: 'as2', title: 'State Synchronization & Dynamic Hooks', courseName: 'Advanced React & TypeScript', instructor: 'Dr. Joseph Adebayo', status: 'Scheduled', studentsCount: 58, proctoringActive: true, timeUTC: '02:00 PM' },
-    { id: 'as3', title: 'Transactional Normalization & Indexes', courseName: 'Database Engineering & PostgreSQL', instructor: 'Dr. Joseph Adebayo', status: 'Scheduled', studentsCount: 31, proctoringActive: false, timeUTC: '11:00 AM' },
-    { id: 'as4', title: 'Neural Networks and Deep Transformers', courseName: 'Intro to Machine Learning', instructor: 'Prof. Mariam Cole', status: 'Live', studentsCount: 75, proctoringActive: true, timeUTC: '09:00 AM' }
-  ]);
+  const [sessions, setSessions] = useState<AdminSession[]>([]);
 
   // State: Smart Proctoring violations ledger
-  const [proctoringLogs, setProctoringLogs] = useState<ProctoringLog[]>([
-    { id: 'p1', studentName: 'John Mwenda', courseName: 'Data Structure & Algorithms', violationType: 'Tab Switch', severity: 'Medium', loggedTime: '10:04 AM', status: 'Warning_Sent' },
-    { id: 'p2', studentName: 'Sarah Mwangi', courseName: 'Advanced React & TypeScript', violationType: 'Face Missing', severity: 'High', loggedTime: '10:12 AM', status: 'Unresolved' },
-    { id: 'p3', studentName: 'Emeka Obi', courseName: 'Database Engineering & PostgreSQL', violationType: 'Ambience Noise', severity: 'Low', loggedTime: '10:25 AM', status: 'Audit_Cleared' },
-    { id: 'p4', studentName: 'Abdi Hassan', courseName: 'Intro to Machine Learning', violationType: 'Multiple Faces', severity: 'High', loggedTime: '10:33 AM', status: 'Unresolved' }
-  ]);
+  const [proctoringLogs, setProctoringLogs] = useState<ProctoringLog[]>([]);
 
   // State: Attendance database list
-  const [attendanceLogs, setAttendanceLogs] = useState([
-    { id: 'at1', studentName: 'John Mwenda', className: 'Tree Traversals', joinTime: '10:01 AM', status: 'Present', verifiedBy: 'Smart FaceID', attendanceScore: 100 },
-    { id: 'at2', studentName: 'Sarah Mwangi', className: 'Tree Traversals', joinTime: '10:04 AM', status: 'Present', verifiedBy: 'Smart FaceID', attendanceScore: 98 },
-    { id: 'at3', studentName: 'Emeka Obi', className: 'Neural Networks', joinTime: '09:12 AM', status: 'Late', verifiedBy: 'Manual Overrides', attendanceScore: 75 },
-    { id: 'at4', studentName: 'Kate Henshaw', className: 'Neural Networks', joinTime: '---', status: 'Absent', verifiedBy: 'N/A', attendanceScore: 0 },
-    { id: 'at5', studentName: 'Abdi Hassan', className: 'Tree Traversals', joinTime: '10:02 AM', status: 'Present', verifiedBy: 'GPS Geo-Check', attendanceScore: 100 }
-  ]);
+  const [attendanceLogs, setAttendanceLogs] = useState<Array<{ id: string; studentName: string; className: string; joinTime: string; status: string; verifiedBy: string; attendanceScore: number }>>([]);
 
   // State: Broadcast and schedule overlays
   const [globalAnnouncement, setGlobalAnnouncement] = useState('');

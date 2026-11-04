@@ -127,6 +127,7 @@ export interface SidebarProps {
     onNavigateToSettings: () => void;
     onOpenOnboarding?: () => void;
     onOpenTour?: () => void;
+    onVisitWebsite?: () => void;
 }
 
 const languages = [
@@ -258,7 +259,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onNavigateToProfile,
     onNavigateToSettings,
     onOpenOnboarding,
-    onOpenTour
+    onOpenTour,
+    onVisitWebsite
 }) => {
     const { language, setLanguage } = useLanguage();
     const [isUserMenuOpen, setUserMenuOpen] = useState(false);
@@ -580,7 +582,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
             {/* Top Brand & Collapse Bar (Borderless) */}
             <div className="flex items-center h-16 px-4 justify-between flex-shrink-0">
-                <div className={`flex items-center space-x-2.5 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}`}>
+                <div 
+                    onClick={onVisitWebsite}
+                    className={`flex items-center space-x-2.5 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 hidden'} ${onVisitWebsite ? 'cursor-pointer hover:opacity-90' : ''}`}
+                    title={onVisitWebsite ? "Return to CogniSacra Website" : undefined}
+                >
                     <div className="p-1 bg-white rounded-lg shadow-sm border border-zinc-200 inline-flex items-center justify-center shrink-0">
                         <img 
                             src="/cogni-sacra.jpeg" 
@@ -599,8 +605,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 {!isOpen && (
-                    <div className="w-full flex justify-center">
-                        <div className="p-1 bg-white rounded-lg shadow-sm border border-zinc-200 inline-flex items-center justify-center shrink-0" title="CogniSacra">
+                    <div 
+                        onClick={onVisitWebsite}
+                        className={`w-full flex justify-center ${onVisitWebsite ? 'cursor-pointer hover:opacity-90' : ''}`}
+                        title={onVisitWebsite ? "Return to CogniSacra Website" : "CogniSacra"}
+                    >
+                        <div className="p-1 bg-white rounded-lg shadow-sm border border-zinc-200 inline-flex items-center justify-center shrink-0">
                             <img 
                                 src="/cogni-sacra.jpeg" 
                                 alt="CogniSacra" 

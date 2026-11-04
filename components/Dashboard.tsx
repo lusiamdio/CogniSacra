@@ -672,7 +672,29 @@ const Dashboard: React.FC<DashboardProps> = ({
                             ))}
                         </div>
 
-                        {filteredCourses.length === 0 && (
+                        {courses.length === 0 ? (
+                            <div className="text-center py-16 px-4 text-zinc-400 bg-[#0E131C] rounded-2xl shadow-xl mt-4 space-y-3">
+                                <BookOpen className="w-10 h-10 text-zinc-600 mx-auto" />
+                                <p className="text-sm font-bold text-white font-serif">No Courses Published Yet</p>
+                                <p className="text-xs text-zinc-400 font-mono max-w-md mx-auto">
+                                    The academic catalog is currently being populated by accredited institutions and faculty.
+                                </p>
+                                <div className="pt-2 flex flex-wrap justify-center gap-2">
+                                    <button
+                                        onClick={() => onNavigate('library')}
+                                        className="px-4 py-2 rounded-xl bg-[#141B26] hover:bg-zinc-800 text-emerald-400 font-mono text-xs font-bold transition"
+                                    >
+                                        Explore Virtual Library →
+                                    </button>
+                                    <button
+                                        onClick={() => onNavigate('tutor')}
+                                        className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-mono text-xs font-bold transition"
+                                    >
+                                        Consult AI Tutor →
+                                    </button>
+                                </div>
+                            </div>
+                        ) : filteredCourses.length === 0 ? (
                             <div className="text-center py-16 text-zinc-400 bg-[#0E131C] rounded-2xl shadow-xl mt-4">
                                 <p className="text-sm font-semibold text-zinc-200">No courses match your filter criteria.</p>
                                 <p className="text-xs mt-1 text-zinc-500 font-mono">Try adjusting your subject or level selections.</p>
@@ -686,55 +708,59 @@ const Dashboard: React.FC<DashboardProps> = ({
                                     Reset Filters
                                 </button>
                             </div>
-                        )}
+                        ) : null}
                     </div>
 
-                    {/* Trending & Open Courses Horizontal Carousels */}
-                    <div className="space-y-6 pt-4">
-                        <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-base font-bold text-white font-serif flex items-center gap-2">
-                                    <TrendingUp size={16} className="text-amber-400" />
-                                    <span>{trendingSkillsText}</span>
-                                </h3>
-                                <span className="text-xs font-mono text-zinc-500">Highest rated this term</span>
+                    {/* Trending & Open Courses Horizontal Carousels (only rendered if trendingCourses exist) */}
+                    {trendingCourses.length > 0 && (
+                        <div className="space-y-6 pt-4">
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-base font-bold text-white font-serif flex items-center gap-2">
+                                        <TrendingUp size={16} className="text-amber-400" />
+                                        <span>{trendingSkillsText}</span>
+                                    </h3>
+                                    <span className="text-xs font-mono text-zinc-500">Highest rated this term</span>
+                                </div>
+                                <div className="flex overflow-x-auto space-x-4 pb-3 -mx-4 px-4 no-scrollbar">
+                                    {trendingCourses.map(course => (
+                                        <div key={course.id} className="flex-shrink-0 w-72 sm:w-80">
+                                            <CourseCard 
+                                                course={course} 
+                                                onSelect={onSelectCourse} 
+                                                isBookmarked={bookmarkedCourseIds.has(course.id)}
+                                                onToggleBookmark={onToggleBookmark}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div className="flex overflow-x-auto space-x-4 pb-3 -mx-4 px-4 no-scrollbar">
-                                {trendingCourses.map(course => (
-                                    <div key={course.id} className="flex-shrink-0 w-72 sm:w-80">
-                                        <CourseCard 
-                                            course={course} 
-                                            onSelect={onSelectCourse} 
-                                            isBookmarked={bookmarkedCourseIds.has(course.id)}
-                                            onToggleBookmark={onToggleBookmark}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
 
-                        <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-base font-bold text-white font-serif flex items-center gap-2">
-                                    <GraduationCap size={16} className="text-emerald-400" />
-                                    <span>{freeCoursesText}</span>
-                                </h3>
-                                <span className="text-xs font-mono text-zinc-500">Sponsored academic tracks</span>
-                            </div>
-                            <div className="flex overflow-x-auto space-x-4 pb-3 -mx-4 px-4 no-scrollbar">
-                                {freeCourses.map(course => (
-                                    <div key={course.id} className="flex-shrink-0 w-72 sm:w-80">
-                                        <CourseCard 
-                                            course={course} 
-                                            onSelect={onSelectCourse} 
-                                            isBookmarked={bookmarkedCourseIds.has(course.id)}
-                                            onToggleBookmark={onToggleBookmark}
-                                        />
+                            {freeCourses.length > 0 && (
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-base font-bold text-white font-serif flex items-center gap-2">
+                                            <GraduationCap size={16} className="text-emerald-400" />
+                                            <span>{freeCoursesText}</span>
+                                        </h3>
+                                        <span className="text-xs font-mono text-zinc-500">Sponsored academic tracks</span>
                                     </div>
-                                ))}
-                            </div>
+                                    <div className="flex overflow-x-auto space-x-4 pb-3 -mx-4 px-4 no-scrollbar">
+                                        {freeCourses.map(course => (
+                                            <div key={course.id} className="flex-shrink-0 w-72 sm:w-80">
+                                                <CourseCard 
+                                                    course={course} 
+                                                    onSelect={onSelectCourse} 
+                                                    isBookmarked={bookmarkedCourseIds.has(course.id)}
+                                                    onToggleBookmark={onToggleBookmark}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Sidebar (4 Cols) */}

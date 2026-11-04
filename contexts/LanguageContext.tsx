@@ -1,5 +1,4 @@
-
-import React, { createContext, useState, useContext, useCallback, useRef, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useCallback, useRef, useEffect, ReactNode } from 'react';
 import { translateText } from '../services/geminiService';
 import { translations } from '../translations';
 import i18n from '../i18n';
@@ -43,7 +42,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
     }, [language]);
     
-    React.useEffect(() => {
+    useEffect(() => {
         i18n.changeLanguage(language);
         document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
         document.documentElement.lang = language;

@@ -11,23 +11,21 @@ import DoughnutChart from './shared/DoughnutChart';
 const InstitutionAnalyticsView: React.FC = () => {
     const data = institutionData;
 
-    const topCoursesData = [
-        { label: 'React Mastery', value: 1200 },
-        { label: 'AI/UX Design', value: 950 },
-        { label: 'Data Science', value: 800 },
-        { label: 'Cloud Intro', value: 650 },
-        { label: 'JS Scratch', value: 500 },
-    ];
+    const topCoursesData = (data.courses || []).map(c => ({
+        label: c.title,
+        value: c.analytics?.totalStudents || 0
+    }));
     
     // FIX: Corrected property access for learner demographics from `demographics` to `demographicsByDepartment` to match the `InstitutionAnalytics` type definition.
     const demographicsData = data.analytics.demographicsByDepartment?.map(d => ({ label: d.department, value: d.count })) || [];
     const demographicColors = ['#3B82F6', '#10B981', '#F97316', '#8B5CF6'];
 
-    const courseCompletionReport = [
-        { id: 'react-mastery', title: 'Advanced React', enrolled: 1200, completed: 850 },
-        { id: 'ai-ux-design', title: 'AI-Powered UX/UI', enrolled: 950, completed: 720 },
-        { id: 'data-science-python', title: 'Data Science with Python', enrolled: 800, completed: 750 },
-    ];
+    const courseCompletionReport = (data.courses || []).map(c => ({
+        id: c.id,
+        title: c.title,
+        enrolled: c.analytics?.totalStudents || 0,
+        completed: Math.round((c.analytics?.totalStudents || 0) * ((c.analytics?.completionRate || 0) / 100)),
+    }));
 
     return (
         <div className="animate-fade-in space-y-6">
@@ -88,23 +86,31 @@ const InstitutionAnalyticsView: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {courseCompletionReport.map((course) => {
-                                const completionRate = (course.completed / course.enrolled * 100).toFixed(1);
-                                return (
-                                <tr key={course.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{course.title}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{course.enrolled.toLocaleString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{course.completed.toLocaleString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        <div className="flex items-center">
-                                            <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-3">
-                                                <div className="bg-green-600 h-2.5 rounded-full" style={{ width: `${completionRate}%` }}></div>
-                                            </div>
-                                            <span>{completionRate}%</span>
-                                        </div>
+                            {courseCompletionReport.length === 0 ? (
+                                <tr>
+                                    <td colSpan={4} className="px-6 py-8 text-center text-xs font-mono text-zinc-400 italic">
+                                        No courses currently published. Once courses are created and enrolled in, completion metrics will appear here.
                                     </td>
                                 </tr>
-                            )})}
+                            ) : (
+                                courseCompletionReport.map((course) => {
+                                    const completionRate = (course.completed / (course.enrolled || 1) * 100).toFixed(1);
+                                    return (
+                                    <tr key={course.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{course.title}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{course.enrolled.toLocaleString()}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{course.completed.toLocaleString()}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            <div className="flex items-center">
+                                                <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-3">
+                                                    <div className="bg-green-600 h-2.5 rounded-full" style={{ width: `${completionRate}%` }}></div>
+                                                </div>
+                                                <span>{completionRate}%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )})
+                            )}
                         </tbody>
                     </table>
                 </div>

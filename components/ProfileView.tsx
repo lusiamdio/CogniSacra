@@ -929,40 +929,40 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
 
             <div className="space-y-3.5">
-              {userProfile.certificates.map(cert => (
-                <div key={cert.id} className="p-4 rounded-xl bg-[#141B26] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2.5 rounded-xl bg-[#0E131C] text-amber-400 shrink-0">
-                      <Award size={20} />
-                    </div>
-                    <div className="space-y-0.5">
-                      <h4 className="text-xs font-bold font-serif text-white">{cert.courseTitle}</h4>
-                      <p className="text-[11px] font-mono text-zinc-400">
-                        CogniSacra Sovereign Ledger · Issued {cert.issuedDate}
-                      </p>
-                      <p className="text-[10px] font-mono text-zinc-500 truncate max-w-xs">
-                        Credential ID: {cert.transactionHash ? cert.transactionHash.slice(0, 20) + '...' : `CSP-${cert.id}`}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={() => handleVerifyClick(cert)}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500 text-emerald-300 hover:text-black text-xs font-mono font-semibold transition flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <ShieldCheck size={13} />
-                      <span>Show Credential</span>
-                      <ArrowUpRight size={12} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-              {userProfile.certificates.length === 0 && (
-                <p className="text-xs font-mono text-zinc-500 py-4 text-center">
-                  No certifications yet. Complete accredited courses to earn verifiable credentials.
+              {userProfile.certificates.length === 0 ? (
+                <p className="text-xs font-mono text-zinc-500 py-4 text-center italic">
+                  No sovereign credentials issued yet. Complete accredited courses to earn verifiable credentials on ledger.
                 </p>
+              ) : (
+                userProfile.certificates.map(cert => (
+                  <div key={cert.id} className="p-4 rounded-xl bg-[#141B26] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2.5 rounded-xl bg-[#0E131C] text-amber-400 shrink-0">
+                        <Award size={20} />
+                      </div>
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs font-bold font-serif text-white">{cert.courseTitle}</h4>
+                        <p className="text-[11px] font-mono text-zinc-400">
+                          CogniSacra Sovereign Ledger · Issued {cert.issuedDate}
+                        </p>
+                        <p className="text-[10px] font-mono text-zinc-500 truncate max-w-xs">
+                          Credential ID: {cert.transactionHash ? cert.transactionHash.slice(0, 20) + '...' : `CSP-${cert.id}`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleVerifyClick(cert)}
+                        className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500 text-emerald-300 hover:text-black text-xs font-mono font-semibold transition flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <ShieldCheck size={13} />
+                        <span>Show Credential</span>
+                        <ArrowUpRight size={12} />
+                      </button>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </div>

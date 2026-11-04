@@ -552,25 +552,31 @@ export const InstitutionProfileView: React.FC<InstitutionProfileViewProps> = ({
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
-                {courses.map(course => (
-                  <div key={course.id} className="p-4 rounded-xl bg-[#141B26] space-y-2 flex flex-col justify-between">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
-                        <span className="uppercase text-emerald-400 font-bold">{course.level || 'Academic Track'}</span>
-                        <span>{course.duration || '12 Weeks'}</span>
+              {courses.length === 0 ? (
+                <div className="text-center py-12 text-zinc-500 font-mono text-xs italic">
+                  No courses currently published in the catalog.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                  {courses.map(course => (
+                    <div key={course.id} className="p-4 rounded-xl bg-[#141B26] space-y-2 flex flex-col justify-between">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
+                          <span className="uppercase text-emerald-400 font-bold">{course.level || 'Academic Track'}</span>
+                          <span>{course.duration || '12 Weeks'}</span>
+                        </div>
+                        <h4 className="text-xs font-bold font-serif text-white line-clamp-1">{course.title}</h4>
+                        <p className="text-[11px] text-zinc-400 line-clamp-2">{course.description}</p>
                       </div>
-                      <h4 className="text-xs font-bold font-serif text-white line-clamp-1">{course.title}</h4>
-                      <p className="text-[11px] text-zinc-400 line-clamp-2">{course.description}</p>
-                    </div>
 
-                    <div className="pt-2 flex items-center justify-between text-xs font-mono border-t border-zinc-800/40">
-                      <span className="text-emerald-400 font-bold">{course.price === 0 ? 'Scholarship Funded' : `$${course.price}`}</span>
-                      <span className="text-zinc-400">★ {course.rating || 4.9}</span>
+                      <div className="pt-2 flex items-center justify-between text-xs font-mono border-t border-zinc-800/40">
+                        <span className="text-emerald-400 font-bold">{course.price === 0 ? 'Scholarship Funded' : `$${course.price}`}</span>
+                        <span className="text-zinc-400">★ {course.rating || 4.9}</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
